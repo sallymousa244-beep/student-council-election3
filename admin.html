@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>إدارة المرشحات | انتخابات البرلمان الطلابي</title>
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Cairo", sans-serif;
+      background: #f3f7fb;
+      color: #24344d;
+    }
+
+    .site-header {
+      background: #10233f;
+      color: white;
+      padding: 18px 20px;
+      border-bottom: 4px solid #e5b95c;
+    }
+
+    .header-inner {
+      max-width: 1100px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-logo {
+      width: 55px;
+      height: 55px;
+      border-radius: 14px;
+      background: #ffffff18;
+      border: 1px solid #ffffff35;
+      display: grid;
+      place-items: center;
+      font-size: 27px;
+    }
+
+    .brand h1 {
+      font-size: 20px;
+      margin: 0 0 4px;
+    }
+
+    .brand p {
+      font-size: 13px;
+      color: #d8e3f1;
+      margin: 0;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #10233f, #1b365c);
+      color: white;
+      padding: 38px 20px;
+      text-align: center;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      color: #f5d58a;
+      border: 1px solid #e5b95c80;
+      background: #ffffff0b;
+      border-radius: 30px;
+      padding: 5px 16px;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+
+    .hero h2 {
+      margin: 0 0 10px;
+      font-size: clamp(25px, 5vw, 36px);
+    }
+
+    .hero p {
+      color: #d8e3f1;
+      margin: 0;
+      font-size: 15px;
+    }
+
+    .page-container {
+      max-width: 950px;
+      margin: 30px auto;
+      padding: 0 18px;
+    }
+
+    .panel {
+      background: white;
+      border: 1px solid #e2eaf2;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 22px;
+      box-shadow: 0 12px 35px rgba(16, 35, 63, .08);
+    }
+
+    .section-heading {
+      color: #10233f;
+      font-size: 21px;
+      margin: 0 0 18px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #edf2f7;
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 700;
+      font-size: 14px;
+      margin: 15px 0 7px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px 14px;
+      font-family: inherit;
+      font-size: 15px;
+      color: #24344d;
+      background: white;
+      border: 1px solid #d5deea;
+      border-radius: 9px;
+      outline: none;
+    }
+
+    .form-control:focus {
+      border-color: #0d9488;
+      box-shadow: 0 0 0 3px #0d94881c;
+    }
+
+    .primary-button,
+    .secondary-button,
+    .danger-button {
+      border: none;
+      border-radius: 9px;
+      padding: 11px 18px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .primary-button {
+      background: #24344d;
+      color: white;
+    }
+
+    .primary-button:hover {
+      background: #08786f;
+    }
+
+    .secondary-button {
+      background: #edf3f9;
+      color: #10233f;
+    }
+
+    .danger-button {
+      background: #b42318;
+      color: white;
+      padding: 8px 13px;
+    }
+
+    .primary-button:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .full-button {
+      width: 100%;
+      margin-top: 18px;
+    }
+
+    .notice {
+      background: #eef8f7;
+      border: 1px solid #c8e9e5;
+      color: #08786f;
+      padding: 12px 14px;
+      border-radius: 9px;
+      line-height: 1.8;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .candidate-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid #e2eaf2;
+      border-radius: 10px;
+      margin-top: 10px;
+      background: #fff;
+    }
+
+    .candidate-info {
+      line-height: 1.8;
+      overflow-wrap: anywhere;
+    }
+
+    .candidate-name {
+      color: #10233f;
+      font-weight: 700;
+    }
+
+    .candidate-class {
+      color: #718096;
+      font-size: 13px;
+    }
+
+    .empty-message {
+      color: #718096;
+      text-align: center;
+      padding: 20px 8px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .logout-panel {
+      text-align: center;
+      padding: 18px;
+    }
+
+    .logout-button {
+      background: #10233f;
+      color: white;
+      width: 100%;
+      max-width: 320px;
+    }
+
+    .logout-button:hover {
+      background: #1b365c;
+    }
+
+    .site-footer {
+      background: #10233f;
+      color: #d8e3f1;
+      text-align: center;
+      padding: 24px 15px;
+      font-size: 13px;
+      line-height: 2;
+      margin-top: 35px;
+    }
+
+    .site-footer strong {
+      color: #f5d58a;
+    }
+
+    @media (max-width: 600px) {
+      .panel {
+        padding: 18px;
+      }
+
+      .brand h1 {
+        font-size: 17px;
+      }
+
+      .candidate-item {
+        align-items: flex-start;
+      }
+
+      .hero {
+        padding: 30px 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand-logo">🗳️</div>
+      <div class="brand">
+        <h1>انتخابات مجلس البرلمان الطلابي</h1>
+      </div>
+    
+      <nav class="header-nav" aria-label="التنقل الرئيسي">
+        <a href="admin.html">⚙️ صفحة التحكم</a>
+        <a href="index.html">🗳️ صفحة التصويت</a>
+        <a href="results.html">📊 النتائج</a>
+      </nav>
+
+    </div>
+  </div>
+
+  <div class="header-label">العام الدراسي 2026 / 2027</div>
+
+    </div>
+    
+  </header>
+
+  <section class="hero">
+    <span class="hero-tag">لوحة الإدارة</span>
+    <h2>إدارة المرشحات</h2>
+    <p>إضافة المرشحات وتنظيم قوائم الصفوف والشعب</p>
+  </section>
+
+  <main class="page-container">
+
+    <section id="loginSection" class="panel">
+      <h2 class="section-heading">تسجيل الدخول</h2>
+
+      <form id="loginForm">
+        <label class="form-label" for="email">البريد الإلكتروني</label>
+        <input class="form-control" id="email" type="email"
+               autocomplete="username" required>
+
+        <label class="form-label" for="password">كلمة المرور</label>
+        <input class="form-control" id="password" type="password"
+               autocomplete="current-password" required>
+
+        <button class="primary-button full-button" type="submit">
+          تسجيل الدخول
+        </button>
+      </form>
+    </section>
+
+    <p id="status" class="notice hidden" role="status"></p>
+
+    <div id="managementSection" class="hidden">
+
+      <section class="panel">
+        <h2 class="section-heading">إضافة مرشحة جديدة</h2>
+
+        <form id="addForm">
+          <label class="form-label" for="className">الصف والشعبة</label>
+          <select class="form-control" id="className" required>
+            <option value="">اختاري الصف والشعبة</option>
+           <option value="all">جميع الصفوف</option>
+        <option>السابع أ</option>
+        <option>السابع ب</option>
+        <option>السابع ج</option>
+        <option>الثامن أ</option>
+        <option>الثامن ب</option>
+        <option>الثامن ج</option>
+        <option>التاسع أ</option>
+        <option>التاسع ب</option>
+        <option>التاسع ج</option>
+        <option>العاشر أكاديمي أ</option>
+        <option>العاشر أكاديمي ب</option>
+        <option>العاشر أعمال</option>
+        <option>العاشر تكنولوجيا</option>
+        <option>الحادي عشر أكاديمي أ</option>
+        <option>الحادي عشر أكاديمي ب</option>
+        <option>الحادي عشر تكنولوجيا</option>
+        <option>الحادي عشر أعمال</option>
+        <option>الثاني عشر صحي أ</option>
+        <option>الثاني عشر صحي ب</option>
+        <option>الثاني عشر تكنولوجيا</option>
+        <option>الثاني عشر أعمال</option>
+        <option>الثاني عشر لغات</option>
+           
+          </select>
+
+          <label class="form-label" for="candidateName">اسم المرشحة</label>
+          <input class="form-control" id="candidateName" type="text"
+                 maxlength="100" placeholder="اكتبي الاسم الكامل" required>
+
+          <button class="primary-button full-button" id="addBtn" type="submit">
+            + إضافة المرشحة
+          </button>
+        </form>
+      </section>
+
+      <section class="panel">
+        <h2 class="section-heading">قائمة المرشحات</h2>
+
+        <label class="form-label" for="filterClass">تصفية حسب الصف</label>
+        <select class="form-control" id="filterClass">
+          <option value="">كل الصفوف</option>
+        </select>
+
+        <div id="candidateList" aria-live="polite">
+          <p class="empty-message">جارٍ تحميل المرشحات...</p>
+        </div>
+      </section>
+
+      <!-- تسجيل الخروج آخر عنصر في لوحة الإدارة -->
+      <section class="panel logout-panel">
+        <button class="primary-button logout-button" id="logoutBtn" type="button">
+          تسجيل الخروج
+        </button>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div>جميع الحقوق محفوظة © 2026</div>
+    <div>إعداد وتطوير: <strong>سالي موسى العمرات</strong></div>
+    <div>مدرسة كفرسوم الثانوية الشاملة المختلطة</div>
+  </footer>
+
+  <script type="module">
+    import {
+      auth,
+      db,
+      signInWithEmailAndPassword,
+      onAuthStateChanged,
+      signOut,
+      collection,
+      getDocs,
+      query,
+      where,
+      addDoc,
+      deleteDoc,
+      doc
+    } from "./firebase.js";
+
+    const $ = id => document.getElementById(id);
+
+    let busy = false;
+
+    function showMessage(message) {
+      $("status").textContent = message;
+      $("status").classList.remove("hidden");
+    }
+
+    function clearMessage() {
+      $("status").textContent = "";
+      $("status").classList.add("hidden");
+    }
+
+    $("loginForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      clearMessage();
+
+      try {
+        await signInWithEmailAndPassword(
+          auth,
+          $("email").value.trim(),
+          $("password").value
+        );
+      } catch (error) {
+        showMessage("تعذر تسجيل الدخول. تحققي من البريد الإلكتروني وكلمة المرور.");
+      }
+    });
+
+    $("logoutBtn").addEventListener("click", async () => {
+      try {
+        await signOut(auth);
+        showMessage("تم تسجيل الخروج.");
+      } catch (error) {
+        showMessage("تعذر تسجيل الخروج. حاولي مرة أخرى.");
+      }
+    });
+
+    onAuthStateChanged(auth, async user => {
+      $("loginSection").classList.toggle("hidden", !!user);
+      $("managementSection").classList.toggle("hidden", !user);
+
+      if (user) {
+        clearMessage();
+        await loadCandidates();
+      }
+    });
+
+    // إعداد خيارات تصفية الصفوف
+    for (const option of $("className").options) {
+      if (!option.value) continue;
+
+      const filterOption = document.createElement("option");
+      filterOption.value = option.value;
+      filterOption.textContent = option.textContent;
+      $("filterClass").appendChild(filterOption);
+    }
+
+    $("filterClass").addEventListener("change", loadCandidates);
+
+    $("className").addEventListener("change", () => {
+      $("filterClass").value = $("className").value;
+      loadCandidates();
+    });
+
+    async function loadCandidates() {
+      if (!auth.currentUser) return;
+
+      const list = $("candidateList");
+      list.replaceChildren();
+
+      try {
+        const selectedClass = $("filterClass").value;
+
+        const candidatesQuery = selectedClass
+          ? query(
+              collection(db, "candidates"),
+              where("className", "==", selectedClass),
+              where("active", "==", true)
+            )
+          : query(
+              collection(db, "candidates"),
+              where("active", "==", true)
+            );
+
+        const snapshot = await getDocs(candidatesQuery);
+
+        if (snapshot.empty) {
+          const empty = document.createElement("p");
+          empty.className = "empty-message";
+          empty.textContent = "لا توجد مرشحات في هذا الصف حاليًا.";
+          list.appendChild(empty);
+          return;
+        }
+
+        snapshot.forEach(candidateDoc => {
+          const data = candidateDoc.data();
+
+          const item = document.createElement("div");
+          item.className = "candidate-item";
+
+          const info = document.createElement("div");
+          info.className = "candidate-info";
+
+          const name = document.createElement("div");
+          name.className = "candidate-name";
+          name.textContent = data.name || "بدون اسم";
+
+          const className = document.createElement("div");
+          className.className = "candidate-class";
+          className.textContent = data.className || "بدون صف";
+
+          info.append(name, className);
+
+          const deleteButton = document.createElement("button");
+          deleteButton.className = "danger-button";
+          deleteButton.textContent = "حذف";
+
+          deleteButton.addEventListener("click", async () => {
+            if (!auth.currentUser || busy) return;
+
+            if (!confirm(`هل تريدين حذف المرشحة "${data.name}"؟`)) {
+              return;
+            }
+
+            busy = true;
+            deleteButton.disabled = true;
+
+            try {
+              await deleteDoc(doc(db, "candidates", candidateDoc.id));
+              showMessage("تم حذف المرشحة بنجاح.");
+              await loadCandidates();
+            } catch (error) {
+              showMessage("تعذر الحذف. تحققي من صلاحيات قاعدة البيانات.");
+              deleteButton.disabled = false;
+            } finally {
+              busy = false;
+            }
+          });
+
+          item.append(info, deleteButton);
+          list.appendChild(item);
+        });
+      } catch (error) {
+        showMessage("تعذر تحميل المرشحات. تحققي من اتصال Firebase.");
+      }
+    }
+
+    $("addForm").addEventListener("submit", async event => {
+      event.preventDefault();
+
+      if (!auth.currentUser || busy) {
+        showMessage("سجّلي الدخول أولًا.");
+        return;
+      }
+
+      const name = $("candidateName").value.trim();
+      const className = $("className").value;
+
+      if (!name || !className) {
+        showMessage("أدخلي اسم المرشحة واختاري الصف.");
+        return;
+      }
+
+      busy = true;
+      $("addBtn").disabled = true;
+      clearMessage();
+
+      try {
+        await addDoc(collection(db, "candidates"), {
+          name,
+          className,
+          active: true
+        });
+
+        $("candidateName").value = "";
+        $("filterClass").value = className;
+
+        showMessage("تمت إضافة المرشحة بنجاح.");
+        await loadCandidates();
+      } catch (error) {
+        showMessage("تعذرت الإضافة. تحققي من صلاحيات Firestore.");
+      } finally {
+        busy = false;
+        $("addBtn").disabled = false;
+      }
+    });
+  </script>
+
+</body>
+</html>

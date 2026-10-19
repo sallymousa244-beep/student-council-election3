@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10233f">
+  <title>انتخابات مجلس الطلبة</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+
+  <header class="site-header">
+  <div class="brand">
+    <div class="brand-logo">🏛</div>
+    <div>
+      <h1>مدرسة كفرسوم الثانوية الشاملة المختلطة</h1>
+      <p>انتخابات مجلس الطلبة</p>
+
+      <nav class="header-nav" aria-label="التنقل الرئيسي">
+        <a href="admin.html">⚙️ صفحة التحكم</a>
+        <a href="index.html">🗳️ صفحة التصويت</a>
+        <a href="results.html">📊 النتائج</a>
+      </nav>
+
+    </div>
+  </div>
+
+  <div class="header-label">العام الدراسي 2026 / 2027</div>
+</header>
+
+  <section class="hero">
+    <div class="hero-content">
+      <span class="hero-tag">انتخابات مجلس الطلبة</span>
+      <h2>صوتك يصنع <span>الفرق</span></h2>
+      <p>
+        المشاركة مسؤولية، وصوتك أمانة.
+        تعرّف على المرشحين في صفك وشارك في اختيار ممثلك في مجلس الطلبة.
+      </p>
+      <button class="primary-button" id="startVoting" type="button">
+        استعرض المرشحين
+      </button>
+    </div>
+  </section>
+
+  <main class="page-container" id="votingSection">
+
+    <div class="section-heading">
+      <h2>المرشحون لمجلس الطلبة</h2>
+      <p>اختَر الصف والشعبة لعرض أسماء المرشحين.</p>
+    </div>
+
+    <section class="panel">
+      <label class="form-label" for="classSelect">
+        الصف والشعبة
+      </label>
+
+      <select class="form-control" id="classSelect">
+        <option value="all">جميع الصفوف</option>
+        <option value="السابع أ">السابع أ</option>
+        <option value="السابع ب">السابع ب</option>
+        <option value="السابع ج">السابع ج</option>
+        <option value="الثامن أ">الثامن أ</option>
+        <option value="الثامن ب">الثامن ب</option>
+        <option value="الثامن ج">الثامن ج</option>
+        <option value="التاسع أ">التاسع أ</option>
+        <option value="التاسع ب">التاسع ب</option>
+        <option value="التاسع ج">التاسع ج</option>
+        <option value="العاشر أكاديمي أ">العاشر أكاديمي أ</option>
+        <option value="العاشر أكاديمي ب">العاشر أكاديمي ب</option>
+        <option value="العاشر أعمال">العاشر أعمال</option>
+        <option value="العاشر تكنولوجيا">العاشر تكنولوجيا</option>
+        <option value="الحادي عشر أكاديمي أ">الحادي عشر أكاديمي أ</option>
+        <option value="الحادي عشر أكاديمي ب">الحادي عشر أكاديمي ب</option>
+        <option value="الحادي عشر تكنولوجيا">الحادي عشر تكنولوجيا</option>
+        <option value="الحادي عشر أعمال">الحادي عشر أعمال</option>
+        <option value="الثاني عشر صحي أ">الثاني عشر صحي أ</option>
+        <option value="الثاني عشر صحي ب">الثاني عشر صحي ب</option>
+        <option value="الثاني عشر تكنولوجيا">الثاني عشر تكنولوجيا</option>
+        <option value="الثاني عشر أعمال">الثاني عشر أعمال</option>
+        <option value="الثاني عشر لغات">الثاني عشر لغات</option>
+      </select>
+
+      <div class="notice" id="candidateHint" aria-live="polite">
+        اختَر الصف أولًا، وستظهر أسماء المرشحين المسجلين لهذا الصف.
+      </div>
+
+      <div class="candidate-grid" id="candidateGrid" aria-live="polite">
+        <p>بانتظار اختيار الصف...</p>
+      </div>
+
+      <div class="notice">
+        يرجى التأكد من اختيار المرشح الصحيح قبل متابعة إجراءات الانتخابات.
+      </div>
+
+      <button
+        type="button"
+        class="primary-button"
+        id="confirmVote"
+        disabled
+      >
+        تأكيد الاختيار
+      </button>
+
+      <div class="status-message" id="voteMessage" role="status"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    جميع الحقوق محفوظة © 2026
+    <br>
+    إعداد وتطوير: <strong>سالي موسى العمرات</strong>
+    <br>
+    مدرسة كفرسوم الثانوية الشاملة المختلطة
+  </footer>
+
+  <script type="module">
+    import {
+      db,
+      collection,
+      getDocs,
+      query,
+      where,
+      addDoc,
+      serverTimestamp
+    } from "./firebase.js";
+
+    const classSelect = document.getElementById("classSelect");
+    const candidateGrid = document.getElementById("candidateGrid");
+    const candidateHint = document.getElementById("candidateHint");
+    const confirmVote = document.getElementById("confirmVote");
+    const voteMessage = document.getElementById("voteMessage");
+
+    let selectedCandidate = null;
+
+    document.getElementById("startVoting").addEventListener("click", () => {
+      document.getElementById("votingSection").scrollIntoView({
+        behavior: "smooth"
+      });
+      classSelect.focus();
+    });
+
+    classSelect.addEventListener("change", loadCandidates);
+
+    async function loadCandidates() {
+      const className = classSelect.value;
+
+      candidateGrid.replaceChildren();
+      selectedCandidate = null;
+      confirmVote.disabled = true;
+      voteMessage.style.display = "none";
+      voteMessage.textContent = "";
+
+      if (!className) {
+        candidateHint.textContent = "اختَر الصف أولًا لعرض المرشحين.";
+        candidateGrid.textContent = "بانتظار اختيار الصف...";
+        return;
+      }
+
+      candidateHint.textContent =
+        "الصف المختار: " +
+        classSelect.options[classSelect.selectedIndex].text;
+
+      candidateGrid.textContent = "جارٍ تحميل المرشحين...";
+
+      try {
+        const candidatesQuery = query(
+          collection(db, "candidates"),
+          where("className", "==", className),
+          where("active", "==", true)
+        );
+
+        const snapshot = await getDocs(candidatesQuery);
+        candidateGrid.replaceChildren();
+
+        console.log("الصف المختار:", className);
+        console.log("عدد المرشحين:", snapshot.size);
+
+        if (snapshot.empty) {
+          candidateGrid.textContent =
+            "لا يوجد مرشحون نشطون لهذا الصف حاليًا.";
+          return;
+        }
+
+        snapshot.forEach((candidateDoc) => {
+          const candidate = candidateDoc.data();
+
+          const card = document.createElement("div");
+          card.className = "candidate-card";
+
+          const avatar = document.createElement("div");
+          avatar.className = "candidate-avatar";
+          avatar.textContent =
+            (candidate.name || "؟").trim().charAt(0) || "؟";
+
+          const name = document.createElement("h3");
+          name.textContent = candidate.name || "مرشح بدون اسم";
+
+          const classLabel = document.createElement("p");
+          classLabel.textContent =
+            classSelect.options[classSelect.selectedIndex].text;
+
+          const selectButton = document.createElement("button");
+          selectButton.type = "button";
+          selectButton.className = "select-candidate";
+          selectButton.textContent = "اختيار المرشح";
+
+          selectButton.addEventListener("click", () => {
+            selectedCandidate = candidateDoc.id;
+
+            candidateGrid.querySelectorAll(".candidate-card").forEach((item) => {
+              item.classList.remove("selected");
+              const button = item.querySelector(".select-candidate");
+              if (button) button.textContent = "اختيار المرشح";
+            });
+
+            card.classList.add("selected");
+            selectButton.textContent = "تم اختيار المرشح ✓";
+            confirmVote.disabled = false;
+            voteMessage.style.display = "none";
+          });
+
+          card.append(avatar, name, classLabel, selectButton);
+          candidateGrid.appendChild(card);
+        });
+
+      } catch (error) {
+        console.error("Firebase error:", error.code, error.message);
+        candidateGrid.textContent =
+          error.code === "permission-denied"
+            ? "تعذّر الوصول إلى المرشحين. تحققي من صلاحيات Firestore."
+            : "حدث خطأ أثناء تحميل المرشحين: " +
+              (error.code || "خطأ غير معروف");
+      }
+    }
+
+    confirmVote.addEventListener("click", async () => {
+  if (!selectedCandidate || !classSelect.value) return;
+
+  const candidateId = selectedCandidate;
+  const className = classSelect.value;
+
+  confirmVote.disabled = true;
+  confirmVote.textContent = "جارٍ تسجيل الصوت...";
+  voteMessage.style.display = "block";
+  voteMessage.textContent = "";
+
+  try {
+    await addDoc(collection(db, "votes"), {
+      candidateId: candidateId,
+      className: className,
+      createdAt: serverTimestamp()
+    });
+
+    voteMessage.textContent = "تم تسجيل صوتك بنجاح.";
+    voteMessage.style.color = "#08786f";
+
+    selectedCandidate = null;
+    candidateGrid.querySelectorAll(".candidate-card").forEach((card) => {
+      card.classList.remove("selected");
+      const button = card.querySelector(".select-candidate");
+      if (button) button.textContent = "اختيار المرشح";
+    });
+
+  } catch (error) {
+    console.error("Vote error:", error);
+
+    voteMessage.textContent =
+      "تعذّر تسجيل الصوت. يرجى المحاولة لاحقًا.";
+    voteMessage.style.color = "#b91c1c";
+
+  } finally {
+    confirmVote.textContent = "تأكيد الاختيار";
+    confirmVote.disabled = !selectedCandidate;
+  }
+});
+  </script>
+
+</body>
+</html>

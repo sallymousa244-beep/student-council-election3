@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#10233f">
+  <title>نتائج انتخابات مجلس الطلبة</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    /* تثبيت مساحة الرسم ومنع تمدده */
+    .chart-container {
+      position: relative;
+      width: 100%;
+      height: 350px;
+      max-height: 350px;
+      overflow: hidden;
+    }
+
+    .chart-container canvas {
+      display: block;
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    #winnersSection {
+      margin-top: 24px;
+    }
+
+    #winnersList {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .winner-card {
+      background: #f3f7fb;
+      border: 1px solid #e2eaf2;
+      border-right: 4px solid #e5b95c;
+      border-radius: 10px;
+      padding: 16px;
+      min-width: 0;
+    }
+
+    .winner-class {
+      color: #718096;
+      font-size: 13px;
+    }
+
+    .winner-name {
+      color: #10233f;
+      font-size: 17px;
+      font-weight: 800;
+      margin: 8px 0;
+      overflow-wrap: anywhere;
+    }
+
+    .winner-count {
+      color: #08786f;
+      font-weight: 700;
+    }
+
+    .results-summary {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 600px) {
+      .chart-container {
+        height: 300px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="site-header">
+    <div class="brand">
+      <div class="brand-logo">🏛</div>
+
+      <div>
+        <h1>مدرسة كفرسوم الثانوية الشاملة المختلطة</h1>
+        <p>انتخابات مجلس الطلبة</p>
+
+        <nav class="header-nav">
+          <a href="admin.html">⚙️ صفحة التحكم</a>
+          <a href="index.html">🗳️ صفحة التصويت</a>
+          <a href="results.html">📊 النتائج</a>
+        </nav>
+      </div>
+    </div>
+
+    <div class="header-label">العام الدراسي 2026 / 2027</div>
+  </header>
+
+  <main class="page-container">
+
+    <div class="section-heading">
+      <h2>📊 نتائج انتخابات مجلس الطلبة</h2>
+      <p>عدد الأصوات المسجلة لكل مرشحة حسب الصف والشعبة.</p>
+    </div>
+
+    <section class="panel">
+
+      <label class="form-label" for="classFilter">
+        عرض النتائج حسب الصف والشعبة
+      </label>
+
+      <select class="form-control" id="classFilter">
+        <option value="all">جميع الصفوف</option>
+        <option value="السابع أ">السابع أ</option>
+        <option value="السابع ب">السابع ب</option>
+        <option value="السابع ج">السابع ج</option>
+        <option value="الثامن أ">الثامن أ</option>
+        <option value="الثامن ب">الثامن ب</option>
+        <option value="الثامن ج">الثامن ج</option>
+        <option value="التاسع أ">التاسع أ</option>
+        <option value="التاسع ب">التاسع ب</option>
+        <option value="التاسع ج">التاسع ج</option>
+        <option value="العاشر أكاديمي أ">العاشر أكاديمي أ</option>
+        <option value="العاشر أكاديمي ب">العاشر أكاديمي ب</option>
+        <option value="العاشر أعمال">العاشر أعمال</option>
+        <option value="العاشر تكنولوجيا">العاشر تكنولوجيا</option>
+        <option value="الحادي عشر أكاديمي أ">الحادي عشر أكاديمي أ</option>
+        <option value="الحادي عشر أكاديمي ب">الحادي عشر أكاديمي ب</option>
+        <option value="الحادي عشر تكنولوجيا">الحادي عشر تكنولوجيا</option>
+        <option value="الحادي عشر أعمال">الحادي عشر أعمال</option>
+        <option value="الثاني عشر صحي أ">الثاني عشر صحي أ</option>
+        <option value="الثاني عشر صحي ب">الثاني عشر صحي ب</option>
+        <option value="الثاني عشر تكنولوجيا">الثاني عشر تكنولوجيا</option>
+        <option value="الثاني عشر أعمال">الثاني عشر أعمال</option>
+        <option value="الثاني عشر لغات">الثاني عشر لغات</option>
+      </select>
+
+      <div class="notice results-summary">
+        <span>إجمالي الأصوات المعروضة:</span>
+        <strong id="totalVotes">0</strong>
+      </div>
+
+      <!-- الرسم البياني داخل حاوية مستقلة وثابتة الارتفاع -->
+      <div class="chart-container">
+        <canvas id="resultsChart"></canvas>
+      </div>
+
+      <p id="resultsMessage" class="status-message"
+         role="status" aria-live="polite">
+        جارٍ تحميل النتائج...
+      </p>
+
+      <button id="refreshResults" class="primary-button"
+              type="button">
+        تحديث النتائج
+      </button>
+
+    </section>
+
+    <!-- قسم الفائزات مستقل عن الرسم البياني -->
+    <section class="panel" id="winnersSection">
+      <h2>🏆 المرشحات الحاصلات على أعلى الأصوات</h2>
+      <p>تظهر أعلى نتيجة لكل صف وشعبة بحسب الأصوات المسجلة.</p>
+      <div id="winnersList"></div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    جميع الحقوق محفوظة © 2026
+    <br>
+    إعداد وتطوير: <strong>سالي موسى العمرات</strong>
+    <br>
+    مدرسة كفرسوم الثانوية الشاملة المختلطة
+  </footer>
+
+  <script type="module">
+    import {
+      db,
+      collection,
+      getDocs,
+      query,
+      where
+    } from "./firebase.js";
+
+    const classFilter = document.getElementById("classFilter");
+    const totalVotes = document.getElementById("totalVotes");
+    const resultsMessage = document.getElementById("resultsMessage");
+    const refreshButton = document.getElementById("refreshResults");
+    const canvas = document.getElementById("resultsChart");
+    const winnersList = document.getElementById("winnersList");
+
+    let chart = null;
+    let candidates = [];
+    let votes = [];
+
+    async function loadResults() {
+      refreshButton.disabled = true;
+      resultsMessage.style.display = "block";
+      resultsMessage.textContent = "جارٍ تحميل النتائج...";
+
+      try {
+        const [candidateSnapshot, voteSnapshot] = await Promise.all([
+          getDocs(query(
+            collection(db, "candidates"),
+            where("active", "==", true)
+          )),
+          getDocs(collection(db, "votes"))
+        ]);
+
+        candidates = candidateSnapshot.docs.map(item => ({
+          id: item.id,
+          ...item.data()
+        }));
+
+        votes = voteSnapshot.docs.map(item => item.data());
+
+        renderResults();
+      } catch (error) {
+        console.error("Results error:", error);
+        resultsMessage.style.display = "block";
+        resultsMessage.textContent =
+          "تعذّر تحميل النتائج. تحققي من الإنترنت وقواعد Firebase.";
+      } finally {
+        refreshButton.disabled = false;
+      }
+    }
+
+    function renderResults() {
+  const selectedClass = classFilter.value;
+
+  // الرسم البياني حسب الصف المختار
+  const visibleCandidates = candidates.filter(candidate =>
+    selectedClass === "all" ||
+    candidate.className === selectedClass
+  );
+
+  const visibleVotes = votes.filter(vote =>
+    selectedClass === "all" ||
+    vote.className === selectedClass
+  );
+
+  totalVotes.textContent = visibleVotes.length;
+
+  const counts = visibleCandidates.map(candidate =>
+    visibleVotes.filter(vote =>
+      vote.candidateId === candidate.id &&
+      vote.className === candidate.className
+    ).length
+  );
+
+  // إعادة إنشاء الرسم البياني دون تمدد
+  if (chart) {
+    chart.destroy();
+    chart = null;
+  }
+
+  if (visibleCandidates.length > 0) {
+    chart = new Chart(canvas, {
+      type: "bar",
+      data: {
+        labels: visibleCandidates.map(candidate => candidate.name),
+        datasets: [{
+          label: "عدد الأصوات",
+          data: counts,
+          backgroundColor: "#0d9488",
+          borderColor: "#08786f",
+          borderWidth: 1,
+          borderRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        indexAxis: "y",
+        animation: false,
+        scales: {
+          x: {
+            beginAtZero: true,
+            ticks: { precision: 0 },
+            title: {
+              display: true,
+              text: "عدد الأصوات"
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: true,
+            rtl: true
+          }
+        }
+      }
+    });
+  }
+
+  // الفائزات لجميع الصفوف دائمًا
+  winnersList.replaceChildren();
+
+  const classes = [...new Set(
+    candidates.map(candidate => candidate.className)
+  )];
+
+  classes.forEach(className => {
+    const classCandidates = candidates
+      .filter(candidate => candidate.className === className)
+      .map(candidate => ({
+        ...candidate,
+        count: votes.filter(vote =>
+          vote.candidateId === candidate.id &&
+          vote.className === className
+        ).length
+      }));
+
+    if (classCandidates.length === 0) return;
+
+    const highestVotes = Math.max(
+      ...classCandidates.map(candidate => candidate.count)
+    );
+
+    const winners = classCandidates.filter(
+      candidate => candidate.count === highestVotes
+    );
+
+    const card = document.createElement("div");
+    card.className = "winner-card";
+
+    const classTitle = document.createElement("div");
+    classTitle.className = "winner-class";
+    classTitle.textContent = className;
+
+    const winnerName = document.createElement("div");
+    winnerName.className = "winner-name";
+
+    const winnerCount = document.createElement("div");
+    winnerCount.className = "winner-count";
+
+    if (highestVotes === 0) {
+      winnerName.textContent = "لا توجد أصوات مسجلة بعد";
+      winnerCount.textContent = "0 أصوات";
+    } else {
+      winnerName.textContent =
+        (winners.length > 1 ? "تعادل: " : "🏆 ") +
+        winners.map(winner => winner.name).join("، ");
+
+      winnerCount.textContent =
+        `${highestVotes} ${highestVotes === 1 ? "صوت" : "أصوات"}`;
+    }
+
+    card.append(classTitle, winnerName, winnerCount);
+    winnersList.appendChild(card);
+  });
+
+  // الرسائل أسفل الرسم
+  resultsMessage.style.display = "block";
+
+  if (visibleCandidates.length === 0) {
+    resultsMessage.textContent =
+      "لا توجد مرشحات نشطات للعرض في هذا الصف.";
+  } else if (visibleVotes.length === 0) {
+    resultsMessage.textContent =
+      "لا توجد أصوات مسجلة لهذا الاختيار حتى الآن.";
+  } else {
+    resultsMessage.textContent =
+      "تم عرض النتائج وفق الأصوات المسجلة في Firebase.";
+  }
+}
+    classFilter.addEventListener("change", renderResults);
+    refreshButton.addEventListener("click", loadResults);
+
+    loadResults();
+  </script>
+
+</body>
+</html>

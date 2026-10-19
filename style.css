@@ -1,0 +1,413 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --navy: #10233f;
+  --navy-light: #1b365c;
+  --teal: #0d9488;
+  --teal-dark: #08786f;
+  --gold: #e5b95c;
+  --background: #f3f7fb;
+  --white: #ffffff;
+  --text: #24344d;
+  --muted: #718096;
+  --border: #e2eaf2;
+  --shadow: 0 12px 35px rgba(16, 35, 63, .08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Cairo', sans-serif;
+  background: var(--background);
+  color: var(--text);
+  direction: rtl;
+}
+
+button, input, select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.site-header {
+  background: var(--navy);
+  color: white;
+  padding: 18px 6%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.brand-logo {
+  width: 54px;
+  height: 54px;
+  border: 2px solid var(--gold);
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  font-size: 27px;
+  color: var(--gold);
+  background: rgba(255,255,255,.06);
+}
+
+.brand h1 {
+  font-size: 17px;
+  margin: 0 0 4px;
+  font-weight: 800;
+}
+
+.brand p {
+  font-size: 12px;
+  color: #cbd8e8;
+  margin: 0;
+}
+
+.header-label {
+  border: 1px solid rgba(229,185,92,.5);
+  color: var(--gold);
+  padding: 8px 16px;
+  border-radius: 30px;
+  font-size: 13px;
+}
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  padding: 60px 7%;
+  background: linear-gradient(125deg, var(--navy), var(--navy-light));
+  color: white;
+}
+
+.hero::before,
+.hero::after {
+  content: "";
+  position: absolute;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.hero::before {
+  width: 300px;
+  height: 300px;
+  left: -90px;
+  top: -130px;
+}
+
+.hero::after {
+  width: 220px;
+  height: 220px;
+  left: 10%;
+  bottom: -150px;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 750px;
+}
+
+.hero-tag {
+  display: inline-block;
+  color: var(--gold);
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.hero h2 {
+  font-size: clamp(30px, 5vw, 48px);
+  line-height: 1.5;
+  margin: 0 0 14px;
+  font-weight: 800;
+}
+
+.hero h2 span {
+  color: var(--gold);
+}
+
+.hero p {
+  color: #d7e2ef;
+  line-height: 2;
+  max-width: 600px;
+  margin: 0 0 25px;
+}
+
+.primary-button {
+  border: 0;
+  background: var(--teal);
+  color: white;
+  border-radius: 12px;
+  padding: 13px 25px;
+  font-weight: 700;
+  transition: .2s ease;
+}
+
+.primary-button:hover {
+  background: var(--teal-dark);
+  transform: translateY(-2px);
+}
+
+.page-container {
+  max-width: 1150px;
+  margin: auto;
+  padding: 35px 20px 55px;
+}
+
+.section-heading {
+  margin-bottom: 22px;
+}
+
+.section-heading h2 {
+  color: var(--navy);
+  margin: 0 0 5px;
+  font-size: 25px;
+}
+
+.section-heading p {
+  color: var(--muted);
+  margin: 0;
+  font-size: 14px;
+}
+
+.panel {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: var(--shadow);
+  margin-bottom: 25px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 9px;
+  color: var(--navy);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.form-control {
+  width: 100%;
+  min-height: 49px;
+  border: 1px solid var(--border);
+  background: #fbfdff;
+  color: var(--text);
+  border-radius: 11px;
+  padding: 12px 14px;
+  outline: none;
+}
+
+.form-control:focus {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(13,148,136,.1);
+}
+
+.candidate-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+}
+
+.candidate-card {
+  background: white;
+  border: 2px solid var(--border);
+  border-radius: 18px;
+  padding: 23px 18px;
+  text-align: center;
+  transition: .2s ease;
+  box-shadow: 0 5px 18px rgba(16,35,63,.035);
+}
+
+.candidate-card:hover {
+  transform: translateY(-4px);
+  border-color: #9ad9d2;
+}
+
+.candidate-card.selected {
+  border-color: var(--teal);
+  background: #f0fdfa;
+  box-shadow: 0 0 0 3px rgba(13,148,136,.1);
+}
+
+.candidate-avatar {
+  width: 76px;
+  height: 76px;
+  margin: 0 auto 13px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, #d7f3ef, #e9efff);
+  color: var(--navy);
+  display: grid;
+  place-items: center;
+  font-size: 30px;
+  font-weight: 800;
+}
+
+.candidate-card h3 {
+  margin: 0 0 6px;
+  color: var(--navy);
+  font-size: 17px;
+}
+
+.candidate-card p {
+  margin: 0 0 15px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.select-candidate {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  background: white;
+  color: var(--navy);
+  font-weight: 700;
+}
+
+.candidate-card.selected .select-candidate {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: white;
+}
+
+.notice {
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: #eef7ff;
+  color: #24537a;
+  font-size: 13px;
+  line-height: 1.9;
+  margin: 18px 0;
+}
+
+.status-message {
+  padding: 13px 16px;
+  border-radius: 12px;
+  background: #e9f8f4;
+  color: #08786f;
+  margin-top: 15px;
+  display: none;
+}
+
+.site-footer {
+  background: var(--navy);
+  color: #d7e2ef;
+  text-align: center;
+  padding: 24px 15px;
+  font-size: 13px;
+  line-height: 2;
+}
+
+.site-footer strong {
+  color: var(--gold);
+}
+
+@media (max-width: 600px) {
+  .site-header {
+    padding: 15px 5%;
+  }
+
+  .brand h1 {
+    font-size: 14px;
+  }
+
+  .header-label {
+    display: none;
+  }
+
+  .hero {
+    padding: 42px 6%;
+  }
+
+  .panel {
+    padding: 18px;
+  }
+
+  .page-container {
+    padding: 25px 14px 40px;
+  }
+}
+.header-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.header-nav a {
+  display: inline-block;
+  color: #ffffff;
+  text-decoration: none;
+  font-family: "Cairo", sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 7px 12px;
+  border: 1px solid #e5b95c;
+  border-radius: 7px;
+  transition: 0.2s;
+}
+
+.header-nav a:hover {
+  background: #e5b95c;
+  color: #10233f;
+}
+
+@media (max-width: 600px) {
+  .header-nav {
+    gap: 6px;
+  }
+
+  .header-nav a {
+    font-size: 11px;
+    padding: 6px 8px;
+  }
+}
+#winnersSection {
+  margin-top: 20px;
+}
+
+#winnersList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.winner-card {
+  background: #f3f7fb;
+  border: 1px solid #e2eaf2;
+  border-right: 4px solid #e5b95c;
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.winner-class {
+  color: #718096;
+  font-size: 13px;
+}
+
+.winner-name {
+  color: #10233f;
+  font-size: 17px;
+  font-weight: 800;
+  margin: 8px 0;
+}
+
+.winner-count {
+  color: #08786f;
+  font-weight: 700;
+}
